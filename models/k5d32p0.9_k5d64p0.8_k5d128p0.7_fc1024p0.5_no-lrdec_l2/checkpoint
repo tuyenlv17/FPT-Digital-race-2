@@ -1,2 +1,2 @@
-model_checkpoint_path: "/home/tuyenlv17/data/programming/projects/digital-race-2/GSS-CNN-classification/models/k5d32p0.9_k5d64p0.8_k5d128p0.7_fc1024p0.5_no-lrdec_l2/model.ckpt"
-all_model_checkpoint_paths: "/home/tuyenlv17/data/programming/projects/digital-race-2/GSS-CNN-classification/models/k5d32p0.9_k5d64p0.8_k5d128p0.7_fc1024p0.5_no-lrdec_l2/model.ckpt"
+model_checkpoint_path: "/notebooks/GSS-CNN-classification/models/k5d32p0.9_k5d64p0.8_k5d128p0.7_fc1024p0.5_no-lrdec_l2/model.ckpt"
+all_model_checkpoint_paths: "/notebooks/GSS-CNN-classification/models/k5d32p0.9_k5d64p0.8_k5d128p0.7_fc1024p0.5_no-lrdec_l2/model.ckpt"

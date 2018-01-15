@@ -1,13 +1,13 @@
 
 # coding: utf-8
 
-# In[151]:
+# In[ ]:
 
 
 from __future__ import division
 
 
-# In[152]:
+# In[ ]:
 
 
 import tensorflow as tf
@@ -23,13 +23,13 @@ from nolearn.lasagne import BatchIterator
 # %matplotlib inline
 
 
-# In[153]:
+# In[ ]:
 
 
 NUM_CLASS=10
 
 
-# In[154]:
+# In[ ]:
 
 
 def add_path_prefix(c):
@@ -64,7 +64,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size 
 X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size = 0.1, random_state=54651)
 
 
-# In[155]:
+# In[ ]:
 
 
 from collections import namedtuple
@@ -87,7 +87,7 @@ Parameters = namedtuple('Parameters', [
     ])
 
 
-# In[156]:
+# In[ ]:
 
 
 def plot_curve(axis, params, train_column, valid_column, linewidth = 2, train_linestyle = "b-", valid_linestyle = "g-"):
@@ -131,7 +131,7 @@ def plot_learning_curves(params):
     pyplot.yscale("log")
 
 
-# In[157]:
+# In[ ]:
 
 
 import os
@@ -237,7 +237,7 @@ class Paths(object):
         return self.root_path + "learning_curves.png"
 
 
-# In[158]:
+# In[ ]:
 
 
 def fully_connected(input, size):
@@ -329,7 +329,7 @@ def model_pass(input, params, is_training):
     return logits
 
 
-# In[159]:
+# In[ ]:
 
 
 def train_model(params, X_train, y_train, X_valid, y_valid, X_test, y_test):
@@ -467,7 +467,7 @@ def train_model(params, X_train, y_train, X_valid, y_valid, X_test, y_test):
 #         pyplot.show()
 
 
-# In[160]:
+# In[ ]:
 
 
 parameters = Parameters(
@@ -495,8 +495,42 @@ parameters = Parameters(
 )
 
 
-# In[161]:
+# In[ ]:
 
 
-train_model(parameters,X_train, y_train, X_valid, y_valid, X_test, y_test)
+# train_model(parameters,X_train, y_train, X_valid, y_valid, X_test, y_test)
+
+
+# In[ ]:
+
+
+def get_top_k_predictions(params, X, k = 5):
+    
+    # Initialisation routines: generate variable scope, create logger, note start time.
+    paths = Paths(params)
+    
+    # Build the graph
+    graph = tf.Graph()
+    with graph.as_default():
+        # Input data. For the training data, we use a placeholder that will be fed at run time with a training minibatch.
+        tf_x = tf.placeholder(tf.float32, shape = (None, params.image_size[0], params.image_size[1], 1))
+        is_training = tf.constant(False)
+        with tf.variable_scope(paths.var_scope):
+            predictions = tf.nn.softmax(model_pass(tf_x, params, is_training))
+            top_k_predictions = tf.nn.top_k(predictions, k)
+
+    with tf.Session(graph = graph) as session:
+        session.run(tf.global_variables_initializer())
+        tf.train.Saver().restore(session, paths.model_path)
+        [p] = session.run([top_k_predictions], feed_dict = {
+                tf_x : X
+            }
+        )
+        return np.array(p)
+
+
+# In[165]:
+
+
+get_top_k_predictions(parameters, X_test, 3)
 
