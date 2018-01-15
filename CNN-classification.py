@@ -1,13 +1,13 @@
 
 # coding: utf-8
 
-# In[113]:
+# In[151]:
 
 
 from __future__ import division
 
 
-# In[114]:
+# In[152]:
 
 
 import tensorflow as tf
@@ -23,13 +23,13 @@ from nolearn.lasagne import BatchIterator
 # %matplotlib inline
 
 
-# In[115]:
+# In[153]:
 
 
 NUM_CLASS=10
 
 
-# In[116]:
+# In[154]:
 
 
 def add_path_prefix(c):
@@ -64,7 +64,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size 
 X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size = 0.1, random_state=54651)
 
 
-# In[117]:
+# In[155]:
 
 
 from collections import namedtuple
@@ -87,7 +87,7 @@ Parameters = namedtuple('Parameters', [
     ])
 
 
-# In[118]:
+# In[156]:
 
 
 def plot_curve(axis, params, train_column, valid_column, linewidth = 2, train_linestyle = "b-", valid_linestyle = "g-"):
@@ -131,7 +131,7 @@ def plot_learning_curves(params):
     pyplot.yscale("log")
 
 
-# In[119]:
+# In[157]:
 
 
 import os
@@ -157,7 +157,8 @@ class Paths(object):
         self.model_path = self.get_model_path()
         self.train_history_path = self.get_train_history_path()
         self.learning_curves_path = self.get_learning_curves_path()
-        os.makedirs(self.root_path, exist_ok = True)
+        if not os.path.exists(self.root_path):
+            os.makedirs(self.root_path)
 
     def get_model_name(self, params):
         """
@@ -236,7 +237,7 @@ class Paths(object):
         return self.root_path + "learning_curves.png"
 
 
-# In[120]:
+# In[158]:
 
 
 def fully_connected(input, size):
@@ -328,7 +329,7 @@ def model_pass(input, params, is_training):
     return logits
 
 
-# In[124]:
+# In[159]:
 
 
 def train_model(params, X_train, y_train, X_valid, y_valid, X_test, y_test):
@@ -424,7 +425,7 @@ def train_model(params, X_train, y_train, X_valid, y_valid, X_test, y_test):
             batch_cnt=0
             for x_batch, y_batch in batch_iterator(X_train, y_train):
                 batch_cnt+=1
-                print ("batch ", batch_cnt)
+#                 print ("batch ", batch_cnt)
                 session.run([optimizer], feed_dict = {
                         tf_x_batch : x_batch, 
                         tf_y_batch : y_batch,
@@ -466,7 +467,7 @@ def train_model(params, X_train, y_train, X_valid, y_valid, X_test, y_test):
 #         pyplot.show()
 
 
-# In[122]:
+# In[160]:
 
 
 parameters = Parameters(
@@ -494,7 +495,7 @@ parameters = Parameters(
 )
 
 
-# In[125]:
+# In[161]:
 
 
 train_model(parameters,X_train, y_train, X_valid, y_valid, X_test, y_test)
