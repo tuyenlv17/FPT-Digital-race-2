@@ -475,9 +475,9 @@ parameters = Parameters(
     image_size = (32, 32),
     # Training parameters
     batch_size = 256,
-    max_epochs = 1,
+    max_epochs = 100,
     log_epoch = 1,
-    print_epoch = 100,
+    print_epoch = 1,
     # Optimisations
     learning_rate_decay = False,
     learning_rate = 0.0001,
