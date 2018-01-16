@@ -26,7 +26,7 @@ from nolearn.lasagne import BatchIterator
 # In[ ]:
 
 
-NUM_CLASS=12
+NUM_CLASS=13
 
 
 # In[ ]:
