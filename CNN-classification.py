@@ -26,14 +26,16 @@ from nolearn.lasagne import BatchIterator
 # In[ ]:
 
 
-NUM_CLASS=10
+NUM_CLASS=12
 
 
 # In[ ]:
 
 
 def add_path_prefix(c):
-    return "0" + str(c)
+    if c < 10:
+        return "0" + str(c)
+    return "" + str(c)
 def one_hot(labels, n_class = NUM_CLASS):
     total_record = len(labels)
     y = np.zeros((total_record, n_class))
@@ -44,7 +46,7 @@ def load_data():
     X = []
     y = []
     path = './signs-gray-32x32'
-    for i in range(10):
+    for i in range(NUM_CLASS):
         class_path=path + "/" + add_path_prefix(i)
         list_files=os.listdir(class_path)
         for cur_file in list_files:
@@ -60,8 +62,8 @@ def load_data():
     y = one_hot(np.array(y))
     return np.array(X, dtype=np.float32), y
 X_train, y_train = load_data()
-X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size = 0.2, random_state=12132)
-X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size = 0.1, random_state=54651)
+X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size = 0.05, random_state=12132)
+X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size = 0.05, random_state=54651)
 
 
 # In[ ]:
@@ -498,39 +500,8 @@ parameters = Parameters(
 # In[ ]:
 
 
-# train_model(parameters,X_train, y_train, X_valid, y_valid, X_test, y_test)
+train_model(parameters,X_train, y_train, X_valid, y_valid, X_test, y_test)
 
 
 # In[ ]:
-
-
-def get_top_k_predictions(params, X, k = 5):
-    
-    # Initialisation routines: generate variable scope, create logger, note start time.
-    paths = Paths(params)
-    
-    # Build the graph
-    graph = tf.Graph()
-    with graph.as_default():
-        # Input data. For the training data, we use a placeholder that will be fed at run time with a training minibatch.
-        tf_x = tf.placeholder(tf.float32, shape = (None, params.image_size[0], params.image_size[1], 1))
-        is_training = tf.constant(False)
-        with tf.variable_scope(paths.var_scope):
-            predictions = tf.nn.softmax(model_pass(tf_x, params, is_training))
-            top_k_predictions = tf.nn.top_k(predictions, k)
-
-    with tf.Session(graph = graph) as session:
-        session.run(tf.global_variables_initializer())
-        tf.train.Saver().restore(session, paths.model_path)
-        [p] = session.run([top_k_predictions], feed_dict = {
-                tf_x : X
-            }
-        )
-        return np.array(p)
-
-
-# In[165]:
-
-
-get_top_k_predictions(parameters, X_test, 3)
 
